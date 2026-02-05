@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SDM PRO MAX | Cyber Crime Portal</title>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<style>
+:root{
+  --bg:#020617;
+  --card:#0f172a;
+  --glass:rgba(255,255,255,.05);
+  --blue:#38bdf8;
+  --red:#fb7185;
+  --green:#4ade80;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:linear-gradient(135deg,#020617,#020617,#0b1225);
+  color:#e5e7eb;
+  font-family:Segoe UI,system-ui;
+}
+
+.app{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{
+  width:260px;
+  background:#020617;
+  padding:22px;
+  border-right:1px solid rgba(255,255,255,.05)
+}
+.sidebar h2{color:var(--blue)}
+.sidebar p{font-size:12px;opacity:.7}
+.sidebar ul{padding:0;margin-top:25px}
+.sidebar li{
+  list-style:none;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:8px;
+  cursor:pointer;
+}
+.sidebar li:hover{background:var(--glass)}
+
+/* MAIN */
+.main{flex:1;padding:26px}
+
+/* HEADER */
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.badge{
+  background:var(--red);
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:12px;
+}
+
+/* CARD */
+.card{
+  background:linear-gradient(145deg,#0f172a,#020617);
+  padding:20px;
+  border-radius:18px;
+  margin-top:18px;
+  box-shadow:0 20px 40px rgba(0,0,0,.45);
+}
+
+.card h3{margin-top:0}
+
+textarea,input{
+  width:100%;
+  background:#020617;
+  border:none;
+  border-radius:12px;
+  padding:12px;
+  color:#fff;
+  margin-top:10px;
+  outline:none;
+}
+
+button{
+  margin-top:14px;
+  padding:12px 26px;
+  border:none;
+  border-radius:30px;
+  background:linear-gradient(90deg,#22d3ee,#6366f1);
+  font-weight:700;
+  cursor:pointer;
+}
+
+.hidden{display:none}
+
+/* INFO CARDS */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+}
+
+.info{
+  background:var(--glass);
+  padding:16px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.05);
+}
+
+/* STATUS */
+#status{margin-top:10px}
+.success{color:var(--green)}
+.error{color:var(--red)}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <h2>🛡️ SDM</h2>
+  <p>Gov-Grade Cyber Safety</p>
+  <ul>
+    <li>📊 Dashboard</li>
+    <li>🧠 Scam Scan</li>
+    <li>📁 Evidence Upload</li>
+    <li>👮 Cyber Police</li>
+  </ul>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<header>
+  <h1>AI Scam Detection Dashboard</h1>
+  <span class="badge">Court-Ready</span>
+</header>
+
+<!-- SCAN -->
+<section class="card">
+  <h3>🧠 AI Scam Scan</h3>
+  <textarea id="inputText"
+    placeholder="Paste suspicious message (MMS leak, call transfer, UPI fraud...)"></textarea>
+  <button onclick="scan()">Run AI Scan</button>
+</section>
+
+<!-- RESULT -->
+<section id="result" class="card hidden"></section>
+
+<!-- AWARENESS -->
+<section class="grid">
+  <div class="info">
+    <h4>📵 MMS Leak Scam</h4>
+    <p>Scammers threaten with fake/private videos. Never pay. Save evidence.</p>
+  </div>
+  <div class="info">
+    <h4>📞 Call Transfer Fraud</h4>
+    <p>Unknown callers ask to dial *codes*. This can hijack your calls.</p>
+  </div>
+  <div class="info">
+    <h4>💸 UPI / Bank Fraud</h4>
+    <p>No bank asks for OTP, links or screen-sharing.</p>
+  </div>
+</section>
+
+<!-- UPLOAD -->
+<section class="card">
+  <h3>📁 Upload Evidence (Photo / Video / PDF)</h3>
+  <!-- FIXED accept attribute -->
+  <input type="file" id="files" multiple accept="image/*,video/*,application/pdf">
+  <textarea id="note" placeholder="Describe the incident clearly..."></textarea>
+  <button onclick="submitEvidence()">Submit Evidence</button>
+  <div id="status"></div>
+</section>
+
+<!-- CASE -->
+<section id="caseCard" class="card hidden"></section>
+
+</main>
+</div>
+
+<script>
+function scan(){
+  const t=document.getElementById("inputText").value.toLowerCase();
+  let risk="LOW", crime="Normal", advice="No immediate threat.";
+
+  if(t.match(/upi|otp|bank|link|transfer/)){
+    risk="HIGH 🚨";
+    crime="Financial Fraud";
+    advice="Do not share OTP. Call 1930 immediately.";
+  }
+  if(t.match(/mms|video|leak|blackmail/)){
+    risk="CRITICAL ⚠️";
+    crime="MMS / Sextortion";
+    advice="Save evidence & report to Cyber Police.";
+  }
+
+  document.getElementById("result").innerHTML=
+  `<h3>Risk Level: ${risk}</h3>
+   <p><b>Crime Type:</b> ${crime}</p>
+   <p><b>Advice:</b> ${advice}</p>`;
+  document.getElementById("result").classList.remove("hidden");
+}
+
+function submitEvidence(){
+  const files=document.getElementById("files").files;
+  const note=document.getElementById("note").value;
+  const status=document.getElementById("status");
+
+  if(files.length===0){
+    status.innerHTML="❌ Please upload at least one file";
+    status.className="error";
+    return;
+  }
+
+  const fd=new FormData();
+  fd.append("description",note);
+  for(let f of files){fd.append("evidence",f)}
+
+  status.innerHTML="⏳ Uploading evidence...";
+  status.className="";
+
+  axios.post("http://localhost:5000/api/complaints",fd)
+  .then(res=>{
+    status.innerHTML="✅ Evidence uploaded successfully";
+    status.className="success";
+
+    document.getElementById("caseCard").innerHTML=
+    `<h3>📌 Case Registered</h3>
+     <p><b>Case ID:</b> ${res.data.caseId}</p>
+     <p><b>Description:</b> ${res.data.description}</p>
+     <p><b>Files:</b> ${res.data.files.join(", ")}</p>
+     <p><b>Time:</b> ${res.data.registeredAt}</p>
+     <p>👮 Sent to Cyber Crime Unit</p>`;
+
+    document.getElementById("caseCard").classList.remove("hidden");
+  })
+  .catch(()=>{
+    status.innerHTML="❌ Upload failed";
+    status.className="error";
+  });
+}
+</script>
+
+</body>
+</html>
